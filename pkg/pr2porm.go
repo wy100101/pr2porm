@@ -37,11 +37,11 @@ func validateRuleGroups(rgs *rulefmt.RuleGroups) bool {
 
 // ProcessRulesFile(ruleFile, manifestFile, namespace, name, annotations, labels) []error
 // Given a prometheus rules file will generate a PrometheusOperator promrule maniest into the manifestFile
-func ProcessRulesFile(prf, pormf, ns, n string, ls, as *map[string]string) []error {
+func ProcessRulesFile(prf, pormf, ns, n string, ls, as *map[string]string) error {
 	var bprfns string
 	rgs, errs := rulefmt.ParseFile(prf)
-	if errs != nil {
-		return errs
+	if len(errs) > 0 {
+		return fmt.Errorf("%v", errs)
 	}
 	bprf := filepath.Base(prf)
 	if strings.HasSuffix(bprf, ".yaml") {
@@ -70,13 +70,13 @@ func ProcessRulesFile(prf, pormf, ns, n string, ls, as *map[string]string) []err
 
 	op, err := yaml.Marshal(&mf)
 	if err != nil {
-		return []error{err}
+		return err
 	}
 
 	err = ioutil.WriteFile(pormf, op, 0666)
 
 	if err != nil {
-		return []error{err}
+		return err
 	}
 	return nil
 }

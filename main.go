@@ -16,8 +16,8 @@ var (
 
 func main() {
 	kingpin.Parse()
-	errs := pr2porm.ProcessRulesFile(*rulesFile, *manifestFile, *k8sNamespace, *rulesName, labels, annotations)
-	if errs != nil {
-		panic(errs)
+	err := pr2porm.ProcessRulesFile(*rulesFile, *manifestFile, *k8sNamespace, *rulesName, labels, annotations)
+	if err != nil {
+		panic(err)
 	}
 }

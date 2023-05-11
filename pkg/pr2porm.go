@@ -1,6 +1,7 @@
 package pr2porm
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -68,12 +69,15 @@ func ProcessRulesFile(prf, pormf, ns, n string, ls, as *map[string]string) error
 		Spec: rgs,
 	}
 
-	op, err := yaml.Marshal(&mf)
+	b := bytes.Buffer{}
+	e := yaml.NewEncoder(&b)
+	e.SetIndent(2)
+	err := e.Encode(&mf)
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(pormf, op, 0666)
+	err = ioutil.WriteFile(pormf, b.Bytes(), 0666)
 
 	if err != nil {
 		return err
